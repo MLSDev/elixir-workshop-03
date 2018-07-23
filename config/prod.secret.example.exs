@@ -8,6 +8,8 @@ use Mix.Config
 # file or create a script for recreating it, since it's
 # kept out of version control and might be hard to recover
 # or recreate for your teammates (or yourself later on).
+
+# use mix phx.gen.secret
 config :holiday_app, HolidayAppWeb.Endpoint,
   secret_key_base: "your-secret-key-base"
 

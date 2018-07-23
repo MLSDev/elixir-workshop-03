@@ -1,5 +1,9 @@
 use Mix.Config
 
+# use mix phx.gen.secret
+config :holiday_app, HolidayAppWeb.Endpoint,
+  secret_key_base: "your-secret-key-base"
+
 # Configure your database
 config :holiday_app, HolidayApp.Repo,
   adapter: Ecto.Adapters.Postgres,
