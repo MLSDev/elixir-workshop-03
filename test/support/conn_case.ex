@@ -19,8 +19,10 @@ defmodule HolidayAppWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      import HolidayAppWeb.Router.Helpers
       import HolidayApp.Factory
+      import HolidayAppWeb.Router.Helpers
+      import HolidayAppWeb.ConnCaseHelper
+
       # The default endpoint for testing
       @endpoint HolidayAppWeb.Endpoint
     end
