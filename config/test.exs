@@ -9,6 +9,10 @@ config :holiday_app, HolidayAppWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+config :argon2_elixir,
+  t_cost: 1,
+  m_cost: 8
+
 # Finally import the config/test.secret.exs
 # which should be versioned separately.
 import_config "test.secret.exs"

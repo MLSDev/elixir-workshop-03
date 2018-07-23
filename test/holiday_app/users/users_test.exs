@@ -19,4 +19,26 @@ defmodule HolidayApp.UsersTest do
       assert %User{id: ^id} = Users.get_user!(id)
     end
   end
+
+  describe "get_by_email_and_password/2" do
+    setup do
+      user =
+        %User{}
+        |> User.create_changeset(params_for(:user))
+        |> Ecto.Changeset.apply_changes()
+        |> insert()
+
+      {:ok, user: user}
+    end
+
+    test "returns {:ok, user} on valid email and password", %{user: user} do
+      assert {:ok, %User{id: id}} = Users.find_by_email_and_password(user.email, "P4$$w0rd")
+      assert id == user.id
+    end
+
+    test "returns {:error, reason} on invalid credentials", %{user: user} do
+      assert {:error, reason} = Users.find_by_email_and_password(user.email, "password")
+      assert is_binary(reason)
+    end
+  end
 end

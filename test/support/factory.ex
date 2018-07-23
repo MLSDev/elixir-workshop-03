@@ -19,7 +19,8 @@ defmodule HolidayApp.Factory do
   def user_factory do
     %User{
       email: sequence(:email, &"email#{&1}@domain.com"),
-      password: "P4$$w0rd"
+      password: "P4$$w0rd",
+      password_confirmation: "P4$$w0rd"
     }
   end
 

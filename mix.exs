@@ -52,7 +52,9 @@ defmodule HolidayApp.Mixfile do
       {:ex_machina, "~> 2.2", only: :test},
       {:timex, "~> 3.0"},
       {:excoveralls, "~> 0.8", only: :test},
-      {:ex_doc, "~> 0.18", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.18", only: :dev, runtime: false},
+      {:comeonin, "~> 4.0"},
+      {:argon2_elixir, "~> 1.3"}
     ]
   end
 
