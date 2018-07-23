@@ -2,6 +2,7 @@ defmodule HolidayApp.Factory do
   use ExMachina.Ecto, repo: HolidayApp.Repo
 
   alias HolidayApp.Holidays.Holiday
+  alias HolidayApp.Users.User
 
   def holiday_factory do
     %Holiday{
@@ -13,6 +14,13 @@ defmodule HolidayApp.Factory do
 
   def workday_factory do
     %{holiday_factory() | kind: "workday"}
+  end
+
+  def user_factory do
+    %User{
+      email: sequence(:email, &"email#{&1}@domain.com"),
+      password: "P4$$w0rd"
+    }
   end
 
   defp random_date do
