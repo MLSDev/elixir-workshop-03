@@ -12,21 +12,7 @@
   </head>
 
   <body>
-    <div class="container">
-      <%= if @conn.assigns[:current_user] do %>
-        <span>
-          <%= link "Holidays", to: holiday_path(@conn, :index)%>
-        </span>
-        |
-        <span>
-          <%= link "Logout", to: session_path(@conn, :delete), method: :delete %>
-        </span>
-      <% else %>
-        <span>
-          <%= link "Login", to: session_path(@conn, :new)%>
-        </span>
-      <% end %>
-    </div>
+    <%= render "_header.html", assigns %>
 
     <div class="container">
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
