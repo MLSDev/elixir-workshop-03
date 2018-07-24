@@ -1,12 +1,39 @@
 defmodule HolidayAppWeb.HolidayControllerTest do
   use HolidayAppWeb.ConnCase
 
+  setup %{conn: conn} = config do
+    if email = config[:login_as] do
+      user = insert(:user, %{email: email})
+      conn = build_conn_and_login(user)
+      {:ok, conn: conn, user: user}
+    else
+      :ok
+    end
+  end
+
+  test "requires user authentication on all actions", %{conn: conn} do
+    Enum.each([
+      get(conn, holiday_path(conn, :new)),
+      post(conn, holiday_path(conn, :create, %{})),
+      get(conn, holiday_path(conn, :index)),
+      get(conn, holiday_path(conn, :show, "123")),
+      get(conn, holiday_path(conn, :edit, "123")),
+      put(conn, holiday_path(conn, :update, "123", %{})),
+      delete(conn, holiday_path(conn, :delete, "123"))
+    ], fn conn ->
+      assert redirected_to(conn) == "/"
+      assert conn.halted
+    end)
+  end
+
   describe "index" do
+    @tag login_as: "dev@mlsdev.com"
     test "lists all holidays", %{conn: conn} do
       conn = get conn, holiday_path(conn, :index)
       assert html_response(conn, 200) =~ "Listing Holidays"
     end
 
+    @tag login_as: "dev@mlsdev.com"
     test "accepts date range", %{conn: conn} do
       insert(:holiday, %{date: ~D[2018-01-01], title: "New Year"})
       insert(:holiday, %{date: ~D[2018-02-14], title: "St. Valentine"})
@@ -17,14 +44,16 @@ defmodule HolidayAppWeb.HolidayControllerTest do
     end
   end
 
-  describe "new holiday" do
+  describe "new" do
+    @tag login_as: "dev@mlsdev.com"
     test "renders form", %{conn: conn} do
       conn = get conn, holiday_path(conn, :new)
       assert html_response(conn, 200) =~ "New Holiday"
     end
   end
 
-  describe "create holiday" do
+  describe "create" do
+    @tag login_as: "dev@mlsdev.com"
     test "redirects to show when data is valid", %{conn: conn} do
       params = string_params_for(:holiday)
       conn = post conn, holiday_path(conn, :create), holiday: params
@@ -36,6 +65,7 @@ defmodule HolidayAppWeb.HolidayControllerTest do
       assert html_response(conn, 200) =~ "Show Holiday"
     end
 
+    @tag login_as: "dev@mlsdev.com"
     test "renders errors when data is invalid", %{conn: conn} do
       params = %{"kind" => ""}
       conn = post conn, holiday_path(conn, :create), holiday: params
@@ -43,7 +73,8 @@ defmodule HolidayAppWeb.HolidayControllerTest do
     end
   end
 
-  describe "edit holiday" do
+  describe "edit" do
+    @tag login_as: "dev@mlsdev.com"
     test "renders form for editing chosen holiday", %{conn: conn} do
       holiday = insert(:holiday)
       conn = get conn, holiday_path(conn, :edit, holiday)
@@ -51,12 +82,13 @@ defmodule HolidayAppWeb.HolidayControllerTest do
     end
   end
 
-  describe "update holiday" do
+  describe "update" do
     setup %{conn: conn} do
       holiday = insert(:holiday)
       {:ok, conn: conn, holiday: holiday}
     end
 
+    @tag login_as: "dev@mlsdev.com"
     test "redirects when data is valid", %{conn: conn, holiday: holiday} do
       params = %{"kind" => "workday"}
       conn = put conn, holiday_path(conn, :update, holiday), holiday: params
@@ -66,6 +98,7 @@ defmodule HolidayAppWeb.HolidayControllerTest do
       assert html_response(conn, 200) =~ "workday"
     end
 
+    @tag login_as: "dev@mlsdev.com"
     test "renders errors when data is invalid", %{conn: conn, holiday: holiday} do
       params = %{"kind" => ""}
       conn = put conn, holiday_path(conn, :update, holiday), holiday: params
@@ -73,7 +106,8 @@ defmodule HolidayAppWeb.HolidayControllerTest do
     end
   end
 
-  describe "delete holiday" do
+  describe "delete" do
+    @tag login_as: "dev@mlsdev.com"
     test "deletes chosen holiday", %{conn: conn} do
       holiday = insert(:holiday)
       conn = delete conn, holiday_path(conn, :delete, holiday)
