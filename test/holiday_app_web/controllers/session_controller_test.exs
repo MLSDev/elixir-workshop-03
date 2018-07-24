@@ -36,8 +36,8 @@ defmodule HolidayAppWeb.SessionControllerTest do
   end
 
   describe "delete" do
-    test "logs user out", %{conn: conn, user: user} do
-      conn = post conn, session_path(conn, :create, email: user.email, password: "dummyPassword")
+    test "logs user out", %{user: user} do
+      conn = build_conn_and_login(user)
       conn = delete conn, session_path(conn, :delete)
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :info) =~ "You have logged out"

@@ -2,6 +2,7 @@ defmodule HolidayAppWeb.SessionController do
   use HolidayAppWeb, :controller
 
   alias HolidayApp.Users
+  alias HolidayAppWeb.Helpers.AuthHelper
 
   def new(conn, _params) do
     render(conn, :new)
@@ -11,7 +12,7 @@ defmodule HolidayAppWeb.SessionController do
     case Users.find_by_email_and_password(email, password) do
       {:ok, user} ->
         conn
-        |> login(user)
+        |> AuthHelper.login(user)
         |> put_flash(:info, "You have logged in!")
         |> redirect(to: "/")
       {:error, _reason} ->
@@ -23,20 +24,8 @@ defmodule HolidayAppWeb.SessionController do
 
   def delete(conn, _params) do
     conn
-    |> logout()
+    |> AuthHelper.logout()
     |> put_flash(:info, "You have logged out.")
     |> redirect(to: "/")
-  end
-
-  defp login(conn, user) do
-    conn
-    |> put_session(:user_id, user.id)
-    |> assign(:current_user, user)
-  end
-
-  defp logout(conn) do
-    conn
-    |> put_session(:user_id, nil)
-    |> assign(:current_user, nil)
   end
 end
