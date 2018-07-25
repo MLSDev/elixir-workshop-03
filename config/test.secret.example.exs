@@ -12,3 +12,9 @@ config :holiday_app, HolidayApp.Repo,
   database: "holiday_app_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+# Configure Guadrian implementation module
+# Use mix guardian.gen.secret
+config :holiday_app, HolidayAppWeb.Guardian,
+  issuer: "holiday_app",
+  secret_key: "your-guardian-secret" # put the result of the mix command above here

@@ -20,3 +20,9 @@ config :holiday_app, HolidayApp.Repo,
   password: "your-password",
   database: "holiday_app_prod",
   pool_size: 15
+
+# Configure Guadrian implementation module
+# Use mix guardian.gen.secret
+config :holiday_app, HolidayAppWeb.Guardian,
+  issuer: "holiday_app",
+  secret_key: "your-guardian-secret" # put the result of the mix command above here
