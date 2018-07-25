@@ -1,6 +1,7 @@
-defmodule HolidayAppWeb.SessionControllerTest do
+defmodule HolidayAppWeb.AuthControllerTest do
   use HolidayAppWeb.ConnCase
 
+  alias HolidayAppWeb.AuthController
   alias HolidayApp.Users.User
 
   setup do
@@ -16,31 +17,45 @@ defmodule HolidayAppWeb.SessionControllerTest do
 
   describe "new" do
     test "renders form", %{conn: conn} do
-      conn = get conn, session_path(conn, :new)
+      conn = get conn, auth_path(conn, :new)
       assert html_response(conn, 200) =~ "Login"
     end
   end
 
-  describe "create" do
+  describe "login" do
     test "logs user in", %{conn: conn, user: user} do
-      conn = post conn, session_path(conn, :create, email: user.email, password: "dummyPassword")
+      conn = post conn, auth_path(conn, :login, email: user.email, password: "dummyPassword")
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :info) =~  "You have logged in"
     end
 
-    test "denies on wrong password", %{conn: conn, user: user} do
-      conn = post conn, session_path(conn, :create, email: user.email, password: "wrong")
-      assert html_response(conn, 200)
+    test "denies on wrong password and renders login form", %{conn: conn, user: user} do
+      conn = post conn, auth_path(conn, :login, email: user.email, password: "wrong")
+      assert redirected_to(conn) == auth_path(conn, :new)
       assert get_flash(conn, :error) =~  "Invalid email/password combination"
     end
   end
 
-  describe "delete" do
+  describe "logout" do
     test "logs user out", %{user: user} do
       conn = build_conn_and_login(user)
-      conn = delete conn, session_path(conn, :delete)
+      conn = delete conn, auth_path(conn, :logout)
       assert redirected_to(conn) == "/"
       assert get_flash(conn, :info) =~ "You have logged out"
+    end
+  end
+
+  describe "auth_error/3" do
+    test "clears session, redirects to login page and puts message to flash" do
+      conn =
+        build_conn_with_session()
+        |> put_session(:my_key, "my value")
+
+      conn = AuthController.auth_error(conn, {:error, "Error message"}, [])
+
+      refute get_session(conn, :my_key)
+      assert redirected_to(conn) == auth_path(conn, :new)
+      assert get_flash(conn, :error) == "Error message"
     end
   end
 

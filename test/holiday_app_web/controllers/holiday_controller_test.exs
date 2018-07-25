@@ -22,7 +22,7 @@ defmodule HolidayAppWeb.HolidayControllerTest do
       put(conn, holiday_path(conn, :update, "123", %{})),
       delete(conn, holiday_path(conn, :delete, "123"))
     ], fn conn ->
-      assert redirected_to(conn) == "/"
+      assert redirected_to(conn) == auth_path(conn, :new)
       assert conn.halted
     end)
   end

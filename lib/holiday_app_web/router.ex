@@ -7,7 +7,7 @@ defmodule HolidayAppWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug HolidayAppWeb.Plugs.FetchCurrentUser
+    plug HolidayAppWeb.AuthPipeline
   end
 
   scope "/", HolidayAppWeb do
@@ -15,13 +15,14 @@ defmodule HolidayAppWeb.Router do
 
     get "/", HomeController, :index
 
-    resources "/session", SessionController, only: [:new, :create]
+    get "/auth/new", AuthController, :new
+    post "/auth/login", AuthController, :login
   end
 
   scope "/", HolidayAppWeb do
-    pipe_through [:browser, HolidayAppWeb.Plugs.EnsureLoggedIn]
+    pipe_through [:browser, Guardian.Plug.EnsureAuthenticated]
 
-    resources "/session", SessionController, only: [:delete], singleton: true
+    delete "/auth/logout", AuthController, :logout
     resources "/holidays", HolidayController
   end
 end

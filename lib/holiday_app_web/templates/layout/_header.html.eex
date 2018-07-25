@@ -5,11 +5,11 @@
     </span>
     |
     <span>
-      <%= link "Logout", to: session_path(@conn, :delete), method: :delete %>
+      <%= link "Logout", to: auth_path(@conn, :logout), method: :delete %>
     </span>
   <% else %>
     <span>
-      <%= link "Login", to: session_path(@conn, :new)%>
+      <%= link "Login", to: auth_path(@conn, :new)%>
     </span>
   <% end %>
 </div>
