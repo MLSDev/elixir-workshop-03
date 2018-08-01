@@ -2,6 +2,7 @@ defmodule HolidayAppWeb.Helpers.AuthHelperTest do
   use HolidayAppWeb.ConnCase
 
   alias HolidayAppWeb.Helpers.AuthHelper
+  alias HolidayAppWeb.Helpers.TokenHelper
 
   setup do
     conn = build_conn_with_session()
@@ -13,7 +14,12 @@ defmodule HolidayAppWeb.Helpers.AuthHelperTest do
   describe "login/2" do
     test "puts user_id into session", %{conn: conn, user: user} do
       conn = AuthHelper.login(conn, user)
-      assert get_session(conn, :user_id) == user.id
+
+      token = 
+        conn
+        |>TokenHelper.get_token(user.id)
+        
+      assert get_session(conn, :token) == token
     end
 
     test "puts current_user to conn.assigns", %{conn: conn, user: user} do

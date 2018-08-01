@@ -1,20 +1,21 @@
 defmodule HolidayAppWeb.Plugs.FetchCurrentUser do
   import Plug.Conn
+  alias HolidayAppWeb.Helpers.TokenHelper
 
   alias HolidayApp.Users
 
   def init(_opts), do: nil
 
   def call(conn, _) do
-    user_id = get_session(conn, :user_id)
-
-    cond do
-      user = conn.assigns[:current_user] ->
-        conn
-      user = user_id && Users.get_user!(user_id) ->
-        assign(conn, :current_user, user)
-      true ->
-        assign(conn, :current_user, nil)
+    if (conn.assigns[:current_user]) do
+      conn
+    else
+      case TokenHelper.verify_token(conn) do
+        {:ok, user_id} ->
+          assign(conn, :current_user, Users.get_user!(user_id))
+        {:error, _} ->
+          assign(conn, :current_user, nil)
+      end
     end
   end
 end

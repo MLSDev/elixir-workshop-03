@@ -2,6 +2,7 @@ defmodule HolidayAppWeb.Plugs.FetchCurrentUserTest do
   use HolidayAppWeb.ConnCase
 
   alias HolidayAppWeb.Plugs.FetchCurrentUser
+  alias HolidayAppWeb.Helpers.TokenHelper
 
   setup do
     conn = build_conn_with_session()
@@ -22,7 +23,7 @@ defmodule HolidayAppWeb.Plugs.FetchCurrentUserTest do
   test "user assigned to conn struct passes immediately after log in", %{conn: conn, user: user} do
     conn =
       conn
-      |> put_session(:user_id, user.id)
+      |> put_session(:token, TokenHelper.get_token(conn, user.id))
       |> FetchCurrentUser.call(%{})
 
     assert conn.assigns[:current_user]
