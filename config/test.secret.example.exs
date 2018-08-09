@@ -12,3 +12,6 @@ config :holiday_app, HolidayApp.Repo,
   database: "holiday_app_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+
+config :holiday_app, token_salt: "some very long string to salt a token for test env"

@@ -20,3 +20,6 @@ config :holiday_app, HolidayApp.Repo,
   password: "your-password",
   database: "holiday_app_prod",
   pool_size: 15
+
+
+config :holiday_app, token_salt: "some very long string to salt a token for prod env"
